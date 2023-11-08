@@ -111,6 +111,7 @@ function updateScore() {
     npcScoreElement.textContent = npcScore;
 
     
+    if (npcStopped && playerScore > npcScore) playerStopped = true;
     if (playerStopped && npcStopped) finishGame();
 }
 
