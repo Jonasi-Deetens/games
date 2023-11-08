@@ -3,9 +3,10 @@ const game = document.querySelector("#game-area");
 let posX = 100;
 let posY = 100;
 let enemySize = 40;
+let playerSize = 50;
 let lives = 3;
 let startTime;
-const enemyStep = 5;
+const enemyStep = 1;
 
 
 initializeGame()
@@ -22,7 +23,7 @@ function initializeGame() {
         timerElement.textContent = ((Date.now() - startTime) / 1000).toFixed(0);
 
         updateEnemyPositions();
-    }, 100);
+    }, 15);
 
     player.style.top = posY + "px";
     player.style.left = posX + "px";
@@ -61,6 +62,7 @@ function checkCollision(x, y, object) {
                   [(parseInt(x) + enemySize), (parseInt(y) + enemySize)]];
                   
     const enemies = document.querySelectorAll(".enemy");
+    const player = document.querySelector(".player");
     enemies.forEach( enemy => {
         if ( enemy !== object) {
             let enemyPosX = enemy.style.left.slice(0, -2);
@@ -68,9 +70,15 @@ function checkCollision(x, y, object) {
 
             corners.forEach(corner => {
                 if (corner[0] < (parseInt(enemyPosX) + enemySize) && corner[0] > enemyPosX && corner[1] < (parseInt(enemyPosY) + enemySize) && corner[1] > enemyPosY) collided = true;
+                if (corner[0] < (parseInt(posX) + playerSize) && corner[0] > posX && corner[1] < (parseInt(posY) + playerSize) && corner[1] > posY) {
+                    collided = true;
+                    if (lives > 0) lives--;
+                    console.log(lives);
+                }
             });
         }
     });
+
 
     return collided;
 }
@@ -92,14 +100,14 @@ document.body.addEventListener("keydown", (event) => {
             }
             break;
         case "ArrowDown":
-            if (posY < game.clientHeight - 50)
+            if (posY < game.clientHeight - playerSize)
             {
                 posY += 5;
                 player.style.top = posY + "px";
             }
             break;
         case "ArrowRight":
-            if (posX < game.clientWidth - 50)
+            if (posX < game.clientWidth - playerSize)
             {
                 posX += 5;
                 player.style.left = posX + "px";
