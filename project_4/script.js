@@ -1,29 +1,39 @@
-const player = document.querySelector(".player");
 const game = document.querySelector("#game-area");
+
+let player;
 let posX = 100;
 let posY = 100;
 let enemySize = 40;
 let playerSize = 50;
 let lives = 3;
 let startTime;
+let stopTime = false;
+let interval = "";
 const enemyStep = 1;
 
 
 initializeGame()
 
 function initializeGame() {
+    clearInterval(interval);
     posX = 100;
     posY = 100;
     lives = 3;
+    stopTime = false;
+    
+    game.innerHTML = "";
+
+    const playerElement = document.createElement("div");
+    playerElement.classList.add("player");
+    game.appendChild(playerElement);
+    player = playerElement;
+
+    const playButton = document.querySelector(".play-again");
+    playButton.style.display = "none";
+    playButton.addEventListener("click", initializeGame);
 
     startTime = Date.now();
-    console.log(startTime);
-    setInterval(() => {
-        const timerElement = document.querySelector(".timer");
-        timerElement.textContent = ((Date.now() - startTime) / 1000).toFixed(0);
-
-        updateEnemyPositions();
-    }, 15);
+    interval = setInterval(updateGame, 15);
 
     player.style.top = posY + "px";
     player.style.left = posX + "px";
@@ -36,6 +46,15 @@ function initializeGame() {
         enemy.style.left = Math.round(Math.random() * 700 + 200) + "px";
 
         game.appendChild(enemy);
+    }
+}
+
+function updateGame() {
+    if (!stopTime) {
+        const timerElement = document.querySelector(".timer");
+        timerElement.textContent = ((Date.now() - startTime) / 1000).toFixed(0) +'s';
+
+        updateEnemyPositions();
     }
 }
 
@@ -72,8 +91,11 @@ function checkCollision(x, y, object) {
                 if (corner[0] < (parseInt(enemyPosX) + enemySize) && corner[0] > enemyPosX && corner[1] < (parseInt(enemyPosY) + enemySize) && corner[1] > enemyPosY) collided = true;
                 if (corner[0] < (parseInt(posX) + playerSize) && corner[0] > posX && corner[1] < (parseInt(posY) + playerSize) && corner[1] > posY) {
                     collided = true;
-                    if (lives > 0) lives--;
-                    console.log(lives);
+                    if (lives > 0) {
+                        lives--;
+                        console.log(lives);
+                        //enemy.remove();
+                    } else finishGame();
                 }
             });
         }
@@ -81,6 +103,13 @@ function checkCollision(x, y, object) {
 
 
     return collided;
+}
+
+function finishGame() {
+    stopTime = true;
+    
+    const playButton = document.querySelector(".play-again");
+    playButton.style.display = "block";
 }
 
 document.body.addEventListener("keydown", (event) => {
