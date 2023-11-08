@@ -19,7 +19,7 @@ function initializeGame() {
     resultTitle.innerHTML = "";
 
     const playButton = document.querySelector(".play-again");
-    playButton.style.display = "hidden";
+    playButton.style.display = "none";
     playButton.addEventListener("click", initializeGame);
 
     const npcCardSection = document.querySelector(".player-card-section");

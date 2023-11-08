@@ -10,7 +10,12 @@ function initializeGame() {
     let sortedImages = images.sort( () => .5 - Math.random());
     tries = 0;
 
+    const playButton = document.querySelector(".play-again");
+    playButton.addEventListener("click", initializeGame);
+    playButton.style.display = "none";
+
     const cardSection = document.querySelector("#game-table");
+    cardSection.innerHTML = "";
     sortedImages.forEach(image => {
         const card = document.createElement("section");
         card.classList.add("card");
@@ -31,13 +36,30 @@ function showCard(event) {
         firstCard = target;
     } else if (firstCard !== target) {
         if (firstCard.style.backgroundImage !== target.style.backgroundImage){
-            target.classList.add("remove-background");
-            firstCard.classList.add("remove-background");
-            firstCard = "";
+            setTimeout(function() {
+                target.classList.add("remove-background");
+                firstCard.classList.add("remove-background");
+                firstCard = "";
+              }, 200);
         } else {
-            firstCard = "";
             firstCard.removeEventListener("click", showCard);
             target.removeEventListener("click", showCard);
+            firstCard = "";
         }
     }
+
+    checkIfComplete()
+}
+
+function checkIfComplete() {
+    let isComplete = true;
+
+    const cards = document.querySelectorAll(".card");
+
+    cards.forEach(cardItem => {
+        if (cardItem.classList.contains("remove-background")) isComplete = false;
+    });
+
+    const playButton = document.querySelector(".play-again");
+    if (isComplete) playButton.style.display = "block";
 }
