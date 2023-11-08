@@ -70,7 +70,6 @@ function checkCollision(x, y, object) {
                 if (corner[0] < (parseInt(enemyPosX) + enemySize) && corner[0] > enemyPosX && corner[1] < (parseInt(enemyPosY) + enemySize) && corner[1] > enemyPosY) collided = true;
             });
         }
-        console.log(collided);
     });
 
     return collided;
