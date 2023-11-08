@@ -1,0 +1,16 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.game-title {
+    text-align: center;
+    padding: 10px;
+    background-color: black;
+    color: gold;
+    border-bottom: 4px solid gold;
+}
