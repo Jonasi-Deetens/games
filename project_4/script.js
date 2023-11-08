@@ -2,8 +2,10 @@ const player = document.querySelector(".player");
 const game = document.querySelector("#game-area");
 let posX = 100;
 let posY = 100;
+let enemySize = 40;
 let lives = 3;
-let startTime; 
+let startTime;
+const enemyStep = 5;
 
 
 initializeGame()
@@ -40,9 +42,38 @@ function updateEnemyPositions() {
     const enemies = document.querySelectorAll(".enemy");
 
     enemies.forEach( enemy => {
-        let enemyPosX = enemy.style.left.slice(2, -2);
-        console.log(enemyPosX);
+        let enemyPosX = enemy.style.left.slice(0, -2);
+        let enemyPosY = enemy.style.top.slice(0, -2);
+
+        if (enemyPosX > posX && !checkCollision(enemyPosX - enemyStep, enemyPosY, enemy)) enemy.style.left = enemyPosX - enemyStep + "px";
+        else if (enemyPosX < posX && !checkCollision(parseInt(enemyPosX) + enemyStep, enemyPosY, enemy)) enemy.style.left = parseInt(enemyPosX) + enemyStep + "px";
+        
+        if (enemyPosY > posY && !checkCollision(enemyPosX, enemyPosY - enemyStep, enemy)) enemy.style.top = enemyPosY - enemyStep + "px";
+        else if (enemyPosY < posY && !checkCollision(enemyPosX, parseInt(enemyPosY) + enemyStep, enemy)) enemy.style.top = parseInt(enemyPosY) + enemyStep + "px";
     });
+}
+
+function checkCollision(x, y, object) {
+    let collided = false;
+    let corners = [[x, y], 
+                  [(parseInt(x) + enemySize), y],
+                  [x, (parseInt(y) + enemySize)],
+                  [(parseInt(x) + enemySize), (parseInt(y) + enemySize)]];
+                  
+    const enemies = document.querySelectorAll(".enemy");
+    enemies.forEach( enemy => {
+        if ( enemy !== object) {
+            let enemyPosX = enemy.style.left.slice(0, -2);
+            let enemyPosY = enemy.style.top.slice(0, -2);
+
+            corners.forEach(corner => {
+                if (corner[0] < (parseInt(enemyPosX) + enemySize) && corner[0] > enemyPosX && corner[1] < (parseInt(enemyPosY) + enemySize) && corner[1] > enemyPosY) collided = true;
+            });
+        }
+        console.log(collided);
+    });
+
+    return collided;
 }
 
 document.body.addEventListener("keydown", (event) => {
