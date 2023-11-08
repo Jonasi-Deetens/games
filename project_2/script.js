@@ -106,6 +106,7 @@ function updateScore() {
         npcScore += npcCard;
     });
     if (npcScore >= 15) npcStopped = true;
+    if (npcScore > 21) playerStopped = true;
     
     const npcScoreElement = document.querySelector(".npc-score");
     npcScoreElement.textContent = npcScore;
@@ -121,7 +122,7 @@ function finishGame() {
 
     const resultTitle = document.querySelector(".result");
     resultTitle.innerHTML = "";
-    if (playerScore > npcScore && playerScore <= 21) {
+    if ((playerScore > npcScore && playerScore <= 21) || npcScore > 21) {
         resultTitle.textContent = "Awesome! Feeling lucky?";
     } else if (playerScore == npcScore) resultTitle.textContent = "You didn't lose, but you didn't win either!";
     else resultTitle.textContent = "You lose.";

@@ -36,6 +36,15 @@ function initializeGame() {
     }
 }
 
+function updateEnemyPositions() {
+    const enemies = document.querySelectorAll(".enemy");
+
+    enemies.forEach( enemy => {
+        let enemyPosX = enemy.style.left.slice(2, -2);
+        console.log(enemyPosX);
+    });
+}
+
 document.body.addEventListener("keydown", (event) => {
     switch (event.key) {
         case "ArrowUp":
