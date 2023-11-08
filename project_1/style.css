@@ -7,10 +7,51 @@ body {
     padding: 0;
 }
 
+#game-result {
+    background-color: black;
+    color: gold;
+    display: flex;
+    justify-content: space-around;
+}
+
+.card {
+    height: 90px;
+    width: 90px;
+    margin: 15px;
+    border: 4px solid gold;
+    border-radius: 10px;
+    background-color: black;
+    color: gold;
+    text-align: center;
+}
+
+.cards-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 50%;
+    margin: auto;
+}
+
 .game-title {
     text-align: center;
     padding: 10px;
     background-color: black;
     color: gold;
     border-bottom: 4px solid gold;
+}
+
+.play-again {
+    margin: auto;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.play-section {
+    display: flex;
+    justify-content: space-around;
+}
+
+.result {
+    text-align: center;
 }

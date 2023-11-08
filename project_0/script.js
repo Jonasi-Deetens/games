@@ -58,8 +58,6 @@ function checkCard(event) {
         resultTitle.textContent = "Awesome! Your number " + value + " was correct. You can be named many things, hungry not being one of them.";
     } else resultTitle.textContent = "Bummer... You guessed " + value + " and the secret number was " + randomNumber;
 
-    const playButton = document.querySelector(".play-again");
-    playButton.style.display = "block";
 
     const cards = document.querySelectorAll(".card");
 
