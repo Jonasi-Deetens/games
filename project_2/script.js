@@ -44,7 +44,8 @@ function initializeGame() {
 function drawCard(e) {
     let randomCard = Math.round(Math.random() * 12 + 1);
     if (randomCard === 13) {
-        if ((playerScore + randomCard) > 21) randomCard = 1;
+        if ((playerScore + 11) > 21) randomCard = 1;
+        else randomCard = 11;
     }
     if (randomCard > 10) randomCard = 10;
     if (!playerStopped) {
