@@ -61,5 +61,9 @@ function checkIfComplete() {
     });
 
     const playButton = document.querySelector(".play-again");
-    if (isComplete) playButton.style.display = "block";
+    if (isComplete) {
+        const resultTitle = document.querySelector(".result");
+        resultTitle.textContent = "It took you " + tries / 2 + " tries!";
+        playButton.style.display = "block";
+    }
 }
