@@ -47,29 +47,41 @@ function initializeGame() {
     stopButton.addEventListener("click", stop);
 }
 
+function changeValue(card) {
+    playerCards.forEach( playerCard => {
+        if (playerCard === card) {
+            if (playerCard.value === 11) playerCard.value = 1;
+            else playerCard.value = 11;
+            updateScore();
+        }
+    });
+}
+
 function drawCard(e) {
     let card = shuffledDeck[deckIndex];
     deckIndex++;
-    if (card.value === 14) {
+    if (card.face === "A") {
         if ((playerScore + 11) > 21) card.value = 1;
         else card.value = 11;
-    }
-    if (card.value > 10) card.value = 10;
+    } else if (card.value > 10) card.value = 10;
     if (!playerStopped) {
         playerCards.push(card);
         showCard("player", card);
     }
     updateScore();
     if (playerScore <= 21) npcDraw();
+    else npcStopped = true;
+    
+    if (playerStopped && npcStopped) finishGame();
 }
 
 function npcDraw() {
     let card = shuffledDeck[deckIndex];
     deckIndex++;
-    if (card.value === 13) {
+    if (card.value === 14) {
         if ((npcScore + 11) > 21) card.value = 1;
-    }
-    if (card.value > 10) card.value = 10;
+        else card.value = 11;
+    } else if (card.value > 10) card.value = 10;
     if (!npcStopped) {
         npcCards.push(card);
         showCard("npc", card)
@@ -84,13 +96,14 @@ function stop(e) {
         updateScore();
     }
     updateScore();
+    if (playerStopped && npcStopped) finishGame();
 }
 
 function showCard(who, card) {
     let element;
     if (who === "npc") element = document.querySelector(".npc-card-section");
     else element = document.querySelector(".player-card-section");
-    console.log(card);
+
     const cardElement = document.createElement("section");
     cardElement.classList.add("card");
 
@@ -98,6 +111,11 @@ function showCard(who, card) {
         if (card.face === "") valueElement.textContent = card.value;
         else valueElement.textContent = card.face;
         cardElement.appendChild(valueElement);
+        if (card.face === "A" && who === "player") 
+        {
+            console.log("adding");
+            cardElement.addEventListener("click", () => { changeValue(card) });
+        }
 
         const img = document.createElement("img");
         img.classList.add("suit");
@@ -128,9 +146,7 @@ function updateScore() {
     const npcScoreElement = document.querySelector(".npc-score");
     npcScoreElement.textContent = npcScore;
 
-    
     if (npcStopped && playerScore > npcScore) playerStopped = true;
-    if (playerStopped && npcStopped) finishGame();
 }
 
 function finishGame() {

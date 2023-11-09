@@ -58,6 +58,7 @@ h2,p  {
 .npc-card-section, .player-card-section {
     display: flex;
     justify-content: center;
+    height: 200px;
 }
 
 .result {
