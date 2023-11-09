@@ -59,8 +59,8 @@ function drawCard(e) {
         playerCards.push(card);
         showCard("player", card);
     }
-    if (playerScore <= 21) npcDraw();
     updateScore();
+    if (playerScore <= 21) npcDraw();
 }
 
 function npcDraw() {
@@ -74,6 +74,7 @@ function npcDraw() {
         npcCards.push(card);
         showCard("npc", card)
     }
+    updateScore();
 }
 
 function stop(e) {
