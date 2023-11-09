@@ -25,6 +25,10 @@ h2,p  {
     padding: 0;
 }
 
+#log {
+    text-align: center;
+}
+
 .card {
     height: 160px;
     width: 90px;

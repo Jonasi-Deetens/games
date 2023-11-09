@@ -20,6 +20,9 @@ function initializeGame() {
     playerCards = [];
     playerStopped = false;
     npcStopped = false;
+    
+    const logElement = document.querySelector("#log");
+    logElement.innerHTML = "";
 
     const resultTitle = document.querySelector(".result");
     resultTitle.innerHTML = "";
@@ -47,11 +50,49 @@ function initializeGame() {
     stopButton.addEventListener("click", stop);
 }
 
+function addToLog(log, card) {
+    const logElement = document.querySelector("#log");
+    const p = document.createElement("p");
+
+    switch (log) {
+        case "npcDraw":
+            p.textContent = ("Computer drew a " + card.value + ", his total is now: " + (npcScore + card.value));
+            break;
+        case "playerDraw":
+            p.textContent = ("You drew a " + card.value + ", your total is now: " + (playerScore + card.value));
+            break;
+        case "change":
+            if (card.value === 11)
+                p.textContent = ("You changed the Ace to " + card.value + ", total is now: " + (playerScore + 10));
+                else p.textContent = ("You changed the Ace to " + card.value + ", total is now: " + (playerScore - 10));
+            break;
+        case "win":
+            p.textContent = ("You won with a score of : " + playerScore + " vs the npc's: " + npcScore + "!");
+            break;
+        case "draw":
+            p.textContent = ("Well " + playerScore + " isn't really higher than " + npcScore + " is it.");
+            break;
+        case "lose":
+            p.textContent = ("Just spend your money again, we need it!");
+            break;
+        case "playerHold":
+            p.textContent = ("Player stops.");
+            break;
+        case "npcHold":
+            p.textContent = ("NPC stops.");
+            break;
+        default:
+            break;
+    }
+    logElement.appendChild(p);
+}
+
 function changeValue(card) {
     playerCards.forEach( playerCard => {
         if (playerCard === card) {
             if (playerCard.value === 11) playerCard.value = 1;
             else playerCard.value = 11;
+            addToLog("change", playerCard);
             updateScore();
         }
     });
@@ -67,10 +108,15 @@ function drawCard(e) {
     if (!playerStopped) {
         playerCards.push(card);
         showCard("player", card);
+        addToLog("playerDraw", card);
     }
     updateScore();
-    if (playerScore <= 21) npcDraw();
-    else npcStopped = true;
+
+    if (playerScore <= 21 && !npcStopped) npcDraw();
+    else {
+        npcStopped = true;
+        addToLog("npcHold", "");
+    }
     
     if (playerStopped && npcStopped) finishGame();
 }
@@ -85,17 +131,26 @@ function npcDraw() {
     if (!npcStopped) {
         npcCards.push(card);
         showCard("npc", card)
+        addToLog("npcDraw", card);
     }
     updateScore();
+
+    if (npcScore >= 15) {
+        npcStopped = true;
+        addToLog("npcHold", "");
+    }
+    if (npcScore > 21) {
+        playerStopped = true;
+        addToLog("playerHold", "");
+    }
 }
 
 function stop(e) {
     playerStopped = true;
+    addToLog("playerHold", "");
     while(npcScore < 15 && playerScore <= 21) {
         npcDraw();
-        updateScore();
     }
-    updateScore();
     if (playerStopped && npcStopped) finishGame();
 }
 
@@ -140,13 +195,14 @@ function updateScore() {
     npcCards.forEach(npcCard => {
         npcScore += npcCard.value;
     });
-    if (npcScore >= 15) npcStopped = true;
-    if (npcScore > 21) playerStopped = true;
     
     const npcScoreElement = document.querySelector(".npc-score");
     npcScoreElement.textContent = npcScore;
 
-    if (npcStopped && playerScore > npcScore) playerStopped = true;
+    if (npcStopped && playerScore > npcScore) {
+        playerStopped = true;
+        addToLog("playerHold", "");
+    }
 }
 
 function finishGame() {
@@ -157,7 +213,14 @@ function finishGame() {
     resultTitle.innerHTML = "";
     if ((playerScore > npcScore && playerScore <= 21) || npcScore > 21) {
         resultTitle.textContent = "Awesome! Feeling lucky?";
-    } else if (playerScore == npcScore) resultTitle.textContent = "You didn't lose, but you didn't win either!";
-    else resultTitle.textContent = "You lose.";
+        addToLog("win", "");
+    } else if (playerScore == npcScore) {
+        resultTitle.textContent = "You didn't lose, but you didn't win either!";
+        addToLog("draw", "");
+    }
+    else {
+        resultTitle.textContent = "You lose.";
+        addToLog("lose", "");
+    }
 
 }
