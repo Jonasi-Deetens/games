@@ -1,13 +1,19 @@
+import { deck } from "./deck.js";
+
 let npcScore = 0;
 let playerScore = 0;
 let npcCards = [];
 let playerCards = [];
 let playerStopped = false;
 let npcStopped = false;
+let deckIndex = 0;
+let shuffledDeck = [];
 
 initializeGame();
 
 function initializeGame() {
+    shuffledDeck = deck.sort(() => .5 - Math.random());
+    deckIndex = 0;
     npcScore = 0;
     playerScore = 0;
     npcCards = [];
@@ -42,29 +48,31 @@ function initializeGame() {
 }
 
 function drawCard(e) {
-    let randomCard = Math.round(Math.random() * 12 + 1);
-    if (randomCard === 13) {
-        if ((playerScore + 11) > 21) randomCard = 1;
-        else randomCard = 11;
+    let card = shuffledDeck[deckIndex];
+    deckIndex++;
+    if (card.value === 14) {
+        if ((playerScore + 11) > 21) card.value = 1;
+        else card.value = 11;
     }
-    if (randomCard > 10) randomCard = 10;
+    if (card.value > 10) card.value = 10;
     if (!playerStopped) {
-        playerCards.push(randomCard);
-        showCard("player", randomCard);
+        playerCards.push(card);
+        showCard("player", card);
     }
-    npcDraw();
+    if (playerScore <= 21) npcDraw();
     updateScore();
 }
 
 function npcDraw() {
-    let randomCard = Math.round(Math.random() * 11 + 2);
-    if (randomCard === 13) {
-        if ((npcScore + randomCard) > 21) randomCard = 1;
+    let card = shuffledDeck[deckIndex];
+    deckIndex++;
+    if (card.value === 13) {
+        if ((npcScore + 11) > 21) card.value = 1;
     }
-    if (randomCard > 10) randomCard = 10;
+    if (card.value > 10) card.value = 10;
     if (!npcStopped) {
-        npcCards.push(randomCard);
-        showCard("npc", randomCard)
+        npcCards.push(card);
+        showCard("npc", card)
     }
 }
 
@@ -77,25 +85,32 @@ function stop(e) {
     updateScore();
 }
 
-function showCard(who, number) {
+function showCard(who, card) {
     let element;
     if (who === "npc") element = document.querySelector(".npc-card-section");
     else element = document.querySelector(".player-card-section");
+    console.log(card);
+    const cardElement = document.createElement("section");
+    cardElement.classList.add("card");
 
-    const card = document.createElement("section");
-    card.classList.add("card");
+        const valueElement = document.createElement("h3");
+        if (card.face === "") valueElement.textContent = card.value;
+        else valueElement.textContent = card.face;
+        cardElement.appendChild(valueElement);
 
-        const h2 = document.createElement("h2");
-        h2.textContent = number;
-        card.appendChild(h2);
+        const img = document.createElement("img");
+        img.classList.add("suit");
+        img.alt = card.value + " " + card.face;
+        img.src = card.suit;
+        cardElement.appendChild(img);
 
-        element.appendChild(card);
+        element.appendChild(cardElement);
 }
 
 function updateScore() {
     playerScore = 0;
     playerCards.forEach(card => {
-        playerScore += card;
+        playerScore += card.value;
     });
     if (playerScore >= 21) playerStopped = true;
     
@@ -104,7 +119,7 @@ function updateScore() {
 
     npcScore = 0;
     npcCards.forEach(npcCard => {
-        npcScore += npcCard;
+        npcScore += npcCard.value;
     });
     if (npcScore >= 15) npcStopped = true;
     if (npcScore > 21) playerStopped = true;

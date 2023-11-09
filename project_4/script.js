@@ -5,7 +5,7 @@ let posX = 100;
 let posY = 100;
 let enemySize = 40;
 let playerSize = 50;
-let lives = 3;
+let lives = 9;
 let startTime;
 let stopTime = false;
 let interval = "";
@@ -18,7 +18,7 @@ function initializeGame() {
     clearInterval(interval);
     posX = 100;
     posY = 100;
-    lives = 3;
+    lives = 9;
     stopTime = false;
     
     game.innerHTML = "";
@@ -94,8 +94,16 @@ function checkCollision(x, y, object) {
                     if (lives > 0) {
                         lives--;
                         console.log(lives);
-                        //enemy.remove();
-                    } else finishGame();
+                        let newPosX = Math.round(Math.random() * 700 + 200) + "px";
+                        let newPosY = Math.round(Math.random() * 300 + 200) + "px";
+                        while (checkCollision(newPosX, newPosY)) {
+                            newPosX = Math.round(Math.random() * 700 + 200) + "px";
+                            newPosY = Math.round(Math.random() * 300 + 200) + "px";
+                        }
+                        object.style.left = newPosX;
+                        object.style.top = newPosY;
+                    } 
+                    if (lives === 0) finishGame();
                 }
             });
         }
@@ -113,34 +121,36 @@ function finishGame() {
 }
 
 document.body.addEventListener("keydown", (event) => {
-    switch (event.key) {
-        case "ArrowUp":
-            if (posY > 0)
-            {
-                posY -= 5;
-                player.style.top = posY + "px";
-            }
-            break;
-        case "ArrowLeft":
-            if (posX > 0)
-            {
-                posX -= 5;
-                player.style.left = posX + "px";
-            }
-            break;
-        case "ArrowDown":
-            if (posY < game.clientHeight - playerSize)
-            {
-                posY += 5;
-                player.style.top = posY + "px";
-            }
-            break;
-        case "ArrowRight":
-            if (posX < game.clientWidth - playerSize)
-            {
-                posX += 5;
-                player.style.left = posX + "px";
-            }
-            break;
+    if (!stopTime) {
+        switch (event.key) {
+            case "ArrowUp":
+                if (posY > 0)
+                {
+                    posY -= 5;
+                    player.style.top = posY + "px";
+                }
+                break;
+            case "ArrowLeft":
+                if (posX > 0)
+                {
+                    posX -= 5;
+                    player.style.left = posX + "px";
+                }
+                break;
+            case "ArrowDown":
+                if (posY < game.clientHeight - playerSize)
+                {
+                    posY += 5;
+                    player.style.top = posY + "px";
+                }
+                break;
+            case "ArrowRight":
+                if (posX < game.clientWidth - playerSize)
+                {
+                    posX += 5;
+                    player.style.left = posX + "px";
+                }
+                break;
+        }
     }
 });

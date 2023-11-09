@@ -26,12 +26,12 @@ h2,p  {
 }
 
 .card {
-    height: 90px;
+    height: 160px;
     width: 90px;
     margin: 15px;
     border: 4px solid gold;
     border-radius: 10px;
-    background-color: black;
+    background-color: whitesmoke;
     color: gold;
     text-align: center;
 }
@@ -62,4 +62,9 @@ h2,p  {
 
 .result {
     text-align: center;
+}
+
+.suit {
+    width: 50px;
+    height: 50px;
 }
