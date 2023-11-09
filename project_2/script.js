@@ -113,11 +113,15 @@ function drawCard(e) {
     updateScore();
 
     if (playerScore >= 21) {
-        npcStopped = true;
+        if (!npcStopped) {
+            npcStopped = true;
+            addToLog("npcHold", "");
+        }
         playerStopped = true;
+        addToLog("playerHold", "");
     }
     if (playerScore < 21 && !npcStopped) npcDraw();
-    if (playerScore > npcScore && npcStopped) {
+    if (playerScore > npcScore && npcStopped && !playerStopped) {
         playerStopped = true;
         addToLog("playerHold", "");
     }
@@ -137,6 +141,7 @@ function npcDraw() {
         showCard("npc", card)
         addToLog("npcDraw", card);
     }
+
     updateScore();
 
     if (npcScore >= 15) {
@@ -190,7 +195,6 @@ function updateScore() {
     playerCards.forEach(card => {
         playerScore += card.value;
     });
-    if (playerScore >= 21) playerStopped = true;
     
     const playerScoreElement = document.querySelector(".player-score");
     playerScoreElement.textContent = playerScore;
