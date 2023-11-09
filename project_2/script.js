@@ -48,6 +48,10 @@ function initializeGame() {
 
     const stopButton = document.querySelector("#stop-button");
     stopButton.addEventListener("click", stop);
+
+    drawCard();
+    drawCard();
+    npcDraw();
 }
 
 function addToLog(log, card) {
@@ -110,23 +114,23 @@ function drawCard(e) {
         showCard("player", card);
         addToLog("playerDraw", card);
     }
+
     updateScore();
 
     if (playerScore >= 21) {
-        if (!npcStopped) {
+        if (!npcStopped && playerScore > 21) {
             npcStopped = true;
             addToLog("npcHold", "");
         }
         playerStopped = true;
         addToLog("playerHold", "");
     }
-    if (playerScore < 21 && !npcStopped) npcDraw();
     if (playerScore > npcScore && npcStopped && !playerStopped) {
         playerStopped = true;
         addToLog("playerHold", "");
     }
     
-    if (playerStopped && npcStopped) finishGame();
+    if(playerStopped) stop();
 }
 
 function npcDraw() {
@@ -144,11 +148,11 @@ function npcDraw() {
 
     updateScore();
 
-    if (npcScore >= 15) {
+    if (npcScore >= 17 && !npcStopped) {
         npcStopped = true;
         addToLog("npcHold", "");
     }
-    if (npcScore > 21) {
+    if (npcScore > 21 && !playerStopped) {
         playerStopped = true;
         addToLog("playerHold", "");
     }
@@ -157,8 +161,13 @@ function npcDraw() {
 function stop(e) {
     playerStopped = true;
     addToLog("playerHold", "");
-    while(npcScore < 15 && playerScore <= 21) {
-        npcDraw();
+    while(!npcStopped) {
+        if (!(npcScore > playerScore && playerStopped))
+            npcDraw();
+        else {
+            npcStopped = true;
+            addToLog("npcHold", "");
+        }
     }
     if (playerStopped && npcStopped) finishGame();
 }
