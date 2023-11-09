@@ -112,10 +112,14 @@ function drawCard(e) {
     }
     updateScore();
 
-    if (playerScore <= 21 && !npcStopped) npcDraw();
-    else {
+    if (playerScore >= 21) {
         npcStopped = true;
-        addToLog("npcHold", "");
+        playerStopped = true;
+    }
+    if (playerScore < 21 && !npcStopped) npcDraw();
+    if (playerScore > npcScore && npcStopped) {
+        playerStopped = true;
+        addToLog("playerHold", "");
     }
     
     if (playerStopped && npcStopped) finishGame();
@@ -198,11 +202,6 @@ function updateScore() {
     
     const npcScoreElement = document.querySelector(".npc-score");
     npcScoreElement.textContent = npcScore;
-
-    if (npcStopped && playerScore > npcScore) {
-        playerStopped = true;
-        addToLog("playerHold", "");
-    }
 }
 
 function finishGame() {
